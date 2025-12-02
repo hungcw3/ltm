@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quản Lý Sản Phẩm - Bootstrap 5</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+  <style>
+    body {
+      background-color: #f5f7fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+    .card {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border: none;
+      border-radius: 12px;
+    }
+    .btn-primary {
+      background: linear-gradient(45deg, #007bff, #0056b3);
+      border: none;
+    }
+    .btn-warning {
+      background: linear-gradient(45deg, #ffc107, #e0a800);
+      border: none;
+    }
+    .btn-danger {
+      background: linear-gradient(45deg, #dc3545, #c82333);
+      border: none;
+    }
+    .table th {
+      background-color: #e9ecef;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+    .badge {
+      font-size: 0.8rem;
+    }
+    footer {
+      margin-top: 5rem;
+      padding: 2rem 0;
+      background: #343a40;
+      color: #adb5bd;
+    }
+    @media (max-width: 768px) {
+      .card-body {
+        padding: 1rem;
+      }
+      .table {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <i class="bi bi-box-seam"></i> QLSP
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-house"></i> Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#"><i class="bi bi-cart"></i> Sản phẩm</a></li>
+          <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-info-circle"></i> Giới thiệu</a></li>
+          <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-envelope"></i> Liên hệ</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-5">
+    <div class="row g-4">
+      <!-- Form Thêm/Sửa -->
+      <div class="col-lg-4">
+        <div class="card h-100">
+          <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Thêm/Sửa Sản phẩm</h5>
+            <span id="formMode" class="badge bg-light text-success">Thêm mới</span>
+          </div>
+          <div class="card-body">
+            <form id="productForm">
+              <div class="mb-3">
+                <label class="form-label fw-bold"><i class="bi bi-tag"></i> Mã SP</label>
+                <input type="text" class="form-control" id="maSP" placeholder="VD: SP001" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold"><i class="bi bi-card-text"></i> Tên SP</label>
+                <input type="text" class="form-control" id="tenSP" placeholder="Nhập tên sản phẩm" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold"><i class="bi bi-currency-dollar"></i> Giá</label>
+                <input type="number" class="form-control" id="gia" min="0" placeholder="0" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold"><i class="bi bi-box"></i> Số lượng</label>
+                <input type="number" class="form-control" id="soLuong" min="0" placeholder="0" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold"><i class="bi bi-tags"></i> Loại SP</label>
+                <select class="form-select" id="loaiSP" required>
+                  <option value="" disabled selected>Chọn loại</option>
+                  <option value="Điện tử">Điện tử</option>
+                  <option value="Thực phẩm">Thực phẩm</option>
+                  <option value="Thời trang">Thời trang</option>
+                  <option value="Khác">Khác</option>
+                </select>
+              </div>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary">
+                  <i class="bi bi-save"></i> <span id="btnText">Lưu</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Danh sách sản phẩm -->
+      <div class="col-lg-8">
+        <div class="card h-100">
+          <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="bi bi-list-ul"></i> Danh sách Sản phẩm</h5>
+            <span class="badge bg-light text-info" id="totalCount">0 sản phẩm</span>
+          </div>
+          <div class="card-body p-0">
+            <!-- Tìm kiếm -->
+            <div class="p-3 border-bottom">
+              <div class="input-group">
+                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Tìm kiếm theo mã, tên, loại...">
+              </div>
+            </div>
+
+            <!-- Bảng -->
+            <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+              <table class="table table-hover mb-0 align-middle" id="productTable">
+                <thead class="sticky-top">
+                  <tr>
+                    <th>Mã SP</th>
+                    <th>Tên SP</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Loại</th>
+                    <th class="text-center">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Dữ liệu sẽ được thêm bằng JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Thông báo trống -->
+            <div id="emptyState" class="text-center py-5 d-none">
+              <i class="bi bi-inbox display-1 text-muted"></i>
+              <p class="text-muted mt-3">Chưa có sản phẩm nào. Hãy thêm mới!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white text-center py-4 mt-5">
+    <div class="container">
+      <p class="mb-0">&copy; 2025 <strong>Quản lý Sản phẩm</strong>. Được xây dựng với <i class="bi bi-heart-fill text-danger"></i> & Bootstrap 5</p>
+    </div>
+  </footer>
+
+  <!-- Toast Notification -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast" role="alert">
+      <div class="toast-header">
+        <strong class="me-auto" id="toastTitle">Thông báo</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+      </div>
+      <div class="toast-body" id="toastBody"></div>
+    </div>
+  </div>
+
+  <!-- Modal Xác nhận Xóa -->
+  <div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title"><i class="bi bi-exclamation-triangle"></i> Xác nhận</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>Bạn có chắc muốn <strong>xóa</strong> sản phẩm này?</p>
+          <p class="text-muted small" id="deleteProductName"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-danger" id="confirmDelete">Xóa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- JS Logic -->
+  <script src="bt3.js"></script>
+</body>
+</html>
