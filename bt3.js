@@ -80,15 +80,15 @@ document.getElementById('productForm').addEventListener('submit', async function
         });
         const result = await res.json();
 
-        if (result.success || !result.error) {
-            showToast('Thành công', result.message || 'Thao tác thành công!', 'success');
+        if (res.ok) {  // CHỈ KIỂM TRA res.ok, KHÔNG DỰA VÀO result.success
+            showToast('Thành công', 'Thao tác thành công!', 'success');
             this.reset();
-            document.getElementById('formModal').textContent = 'Thêm mới';
+            document.getElementById('formMode').textContent = 'Thêm mới';
             document.getElementById('btnText').textContent = 'Lưu';
             editingId = null;
             loadProducts();
         } else {
-            showToast('Lỗi', result.error, 'danger');
+            showToast('Lỗi', result.error || 'Server lỗi', 'danger');
         }
     } catch (err) {
         showToast('Lỗi', 'Kết nối server thất bại!', 'danger');
